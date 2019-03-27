@@ -1,65 +1,65 @@
-const glob = require('glob')
-const webpack = require('webpack')
-const { resolve } = require('path')
+const glob = require("glob");
+const webpack = require("webpack");
+const { resolve } = require("path");
 
 const getFilename = path =>
   path
-    .split('\\')
+    .split("\\")
     .pop()
-    .split('/')
+    .split("/")
     .pop()
-    .replace('.js', '')
+    .replace(".js", "");
 
 const getExamples = () => {
   return glob
-    .sync('./src/examples/*.js', {
+    .sync("./src/examples/*.js", {
       matchBase: true
     })
     .map(path => {
-      const filename = getFilename(path)
+      const filename = getFilename(path);
 
       return {
         name: `example-${filename}`,
         value: `./src/examples/${filename}.js`
-      }
+      };
     })
     .reduce((acc, o) => {
-      acc[o.name] = o.value
-      return acc
-    }, {})
-}
+      acc[o.name] = o.value;
+      return acc;
+    }, {});
+};
 
 module.exports = [
   {
-    name: 'vendor',
-    entry: ['./src/vendor/example'],
+    name: "vendor",
+    entry: ["./src/vendor/example"],
     output: {
-      path: resolve(__dirname, 'dist'),
-      filename: 'vendor.bundle.js',
-      library: 'vendor'
+      path: resolve(__dirname, "dist"),
+      filename: "vendor.bundle.js",
+      library: "vendor"
     },
     plugins: [
       new webpack.DllPlugin({
-        name: 'vendor',
-        path: resolve(__dirname, 'dist/manifest.json')
+        name: "vendor",
+        path: resolve(__dirname, "dist/manifest.json")
       })
     ]
   },
   {
-    name: 'react-org-chart',
-    dependencies: ['vendor'],
+    name: "react-org-chart",
+    dependencies: ["vendor"],
     entry: {
-      index: './src/index',
+      index: "./src/index",
       ...getExamples()
     },
     output: {
-      filename: '[name].bundle.js',
-      path: resolve(__dirname, 'dist'),
-      publicPath: '/dist/'
+      filename: "[name].bundle.js",
+      path: resolve(__dirname, "dist"),
+      publicPath: "/dist/"
     },
     plugins: [
       new webpack.DllReferencePlugin({
-        manifest: resolve(__dirname, 'dist/manifest.json')
+        manifest: resolve(__dirname, "dist/manifest.json")
       })
     ],
     module: {
@@ -67,12 +67,12 @@ module.exports = [
         {
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
-          use: ['babel-loader']
+          use: ["babel-loader"]
         }
       ]
     },
     resolve: {
-      extensions: ['*', '.js', '.jsx']
+      extensions: ["*", ".js", ".jsx"]
     }
   }
-]
+];

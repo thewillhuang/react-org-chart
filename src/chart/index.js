@@ -1,14 +1,14 @@
-const d3 = require('d3')
-const { collapse, wrapText, helpers } = require('../utils')
-const defineBoxShadow = require('../defs/box-shadow')
-const defineAvatarClip = require('../defs/avatar-clip')
-const render = require('./render')
-const renderUpdate = require('./render-update')
-const defaultConfig = require('./config')
+const d3 = require("d3");
+const { collapse, wrapText, helpers } = require("../utils");
+const defineBoxShadow = require("../defs/box-shadow");
+const defineAvatarClip = require("../defs/avatar-clip");
+const render = require("./render");
+const renderUpdate = require("./render-update");
+const defaultConfig = require("./config");
 
 module.exports = {
   init
-}
+};
 
 function init(options) {
   // Merge options with the default config
@@ -16,11 +16,11 @@ function init(options) {
     ...defaultConfig,
     ...options,
     treeData: options.data
-  }
+  };
 
   if (!config.id) {
-    console.error('react-org-chart: missing id for svg root')
-    return
+    console.error("react-org-chart: missing id for svg root");
+    return;
   }
 
   const {
@@ -32,77 +32,79 @@ function init(options) {
     nodeHeight,
     nodeSpacing,
     shouldResize
-  } = config
+  } = config;
 
   // Calculate how many pixel nodes to be spaced based on the
   // type of line that needs to be rendered
-  if (lineType == 'angle') {
-    config.lineDepthY = nodeHeight + 40
+  if (lineType == "angle") {
+    config.lineDepthY = nodeHeight + 40;
   } else {
-    config.lineDepthY = nodeHeight + 60
+    config.lineDepthY = nodeHeight + 60;
   }
 
   // Get the root element
-  const elem = document.querySelector(id)
+  const elem = document.querySelector(id);
 
   if (!elem) {
-    console.error(`react-org-chart: svg root DOM node not found (id: ${id})`)
-    return
+    console.error(`react-org-chart: svg root DOM node not found (id: ${id})`);
+    return;
   }
 
   // Reset in case there's any existing DOM
-  elem.innerHTML = ''
+  elem.innerHTML = "";
 
-  const elemWidth = elem.offsetWidth
-  const elemHeight = elem.offsetHeight
+  const elemWidth = elem.offsetWidth;
+  const elemHeight = elem.offsetHeight;
 
   // Setup the d3 tree layout
   config.tree = d3.layout
     .tree()
-    .nodeSize([nodeWidth + nodeSpacing, nodeHeight + nodeSpacing])
+    .nodeSize([nodeWidth + nodeSpacing, nodeHeight + nodeSpacing]);
 
   // Calculate width of a node with expanded children
-  const childrenWidth = parseInt(treeData.children.length * nodeWidth / 2)
+  const childrenWidth = parseInt((treeData.children.length * nodeWidth) / 2);
 
   // Add svg root for d3
   const svgroot = d3
     .select(id)
-    .append('svg')
-    .attr('width', elemWidth)
-    .attr('height', elemHeight)
+    .append("svg")
+    .attr("width", elemWidth)
+    .attr("height", elemHeight);
 
   // Add our base svg group to transform when a user zooms/pans
   const svg = svgroot
-    .append('g')
+    .append("g")
     .attr(
-      'transform',
-      'translate(' +
+      "transform",
+      "translate(" +
         parseInt(
           childrenWidth + (elemWidth - childrenWidth * 2) / 2 - margin.left / 2
         ) +
-        ',' +
+        "," +
         20 +
-        ')'
-    )
+        ")"
+    );
 
   // Define box shadow and avatar border radius
-  defineBoxShadow(svgroot, 'boxShadow')
-  defineAvatarClip(svgroot, 'avatarClip', {
+  defineBoxShadow(svgroot, "boxShadow");
+  defineAvatarClip(svgroot, "avatarClip", {
     borderRadius: 40
-  })
+  });
 
   // Center the viewport on initial load
-  treeData.x0 = 0
-  treeData.y0 = elemHeight / 2
+  treeData.x0 = 0;
+  treeData.y0 = elemHeight / 2;
 
   // Collapse all of the children on initial load
-  treeData.children.forEach(collapse)
+  if (config.collapseAll) {
+    treeData.children.forEach(collapse);
+  }
 
   // Connect core variables to config so that they can be
   // used in internal rendering functions
-  config.svg = svg
-  config.svgroot = svgroot
-  config.render = render
+  config.svg = svg;
+  config.svgroot = svgroot;
+  config.render = render;
 
   // Defined zoom behavior
   const zoom = d3.behavior
@@ -110,10 +112,10 @@ function init(options) {
     // Define the [zoomOutBound, zoomInBound]
     .scaleExtent([0.4, 2])
     .duration(50)
-    .on('zoom', renderUpdate(config))
+    .on("zoom", renderUpdate(config));
 
   // Attach zoom behavior to the svg root
-  svgroot.call(zoom)
+  svgroot.call(zoom);
 
   // Define the point of origin for zoom transformations
   zoom.translate([
@@ -121,25 +123,25 @@ function init(options) {
       childrenWidth + (elemWidth - childrenWidth * 2) / 2 - margin.left / 2
     ),
     20
-  ])
+  ]);
 
   // Add listener for when the browser or parent node resizes
   const resize = () => {
     if (!elem) {
-      global.removeEventListener('resize', resize)
-      return
+      global.removeEventListener("resize", resize);
+      return;
     }
 
-    svgroot.attr('width', elem.offsetWidth).attr('height', elem.offsetHeight)
-  }
+    svgroot.attr("width", elem.offsetWidth).attr("height", elem.offsetHeight);
+  };
 
   if (shouldResize) {
-    global.addEventListener('resize', resize)
+    global.addEventListener("resize", resize);
   }
 
   // Start initial render
-  render(config)
+  render(config);
 
   // Update DOM root height
-  d3.select(id).style('height', elemHeight + margin.top + margin.bottom)
+  d3.select(id).style("height", elemHeight + margin.top + margin.bottom);
 }
