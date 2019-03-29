@@ -1,6 +1,6 @@
 {
   "name": "@thewillhuang/react-org-chart",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Simple, high-performance react component for d3 org chart",
   "repository": {
     "type": "git",
@@ -24,21 +24,6 @@
   "keywords": [],
   "author": "Fouad Matin <m@fouad.org>",
   "license": "MIT",
-  "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.4",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-stage-2": "^6.24.1",
-    "faker": "^4.1.0",
-    "glob": "^7.1.2",
-    "lodash": "^4.17.5",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "rimraf": "^2.6.2",
-    "webpack": "^4.0.1",
-    "webpack-cli": "^3.3.0",
-    "webpack-dev-server": "^3.1.0"
-  },
   "peerDependencies": {
     "d3": ">= 3.x < 4",
     "react": ">= 15.x",
@@ -54,7 +39,20 @@
     "url": "https://github.com/latticehr/react-org-chart/issues"
   },
   "homepage": "https://github.com/latticehr/react-org-chart#readme",
-  "dependencies": {
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "faker": "^4.1.0",
+    "glob": "^7.1.2",
+    "lodash": "^4.17.5",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "rimraf": "^2.6.2",
+    "webpack": "^4.0.1",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.1.0",
     "acorn": "^6.1.1",
     "acorn-dynamic-import": "^4.0.0",
     "ajv": "^6.10.0",
