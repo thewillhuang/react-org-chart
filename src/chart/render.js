@@ -163,10 +163,12 @@ function render(config) {
     // .attr("onclick", d => d.person.link || "return false")
     .on("click", datum => {
       d3.event.stopPropagation();
+      console.log({ onPersonLinkClick });
+      onPersonLinkClick(datum, d3.event);
       // TODO: fire link click handler
-      if (onPersonLinkClick) {
-        onPersonLinkClick(datum, d3.event);
-      }
+      // if (onPersonLinkClick) {
+      //   onPersonLinkClick(datum, d3.event);
+      // }
     });
 
   iconLink({
